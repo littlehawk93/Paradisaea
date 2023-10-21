@@ -20,17 +20,10 @@
 .history
 .ionide
 
-### Yii ###
-assets/*
-!assets/.gitignore
-protected/runtime/*
-!protected/runtime/.gitignore
-protected/data/*.db
-themes/classic/views/
-
 ### Yii2 ###
 # yii console commands
 /yii
+/yii.bat
 /yii_test
 /yii_test.bat
 
