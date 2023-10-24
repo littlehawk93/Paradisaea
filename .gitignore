@@ -27,6 +27,9 @@
 /yii_test
 /yii_test.bat
 
+# Database files
+/data
+
 # phpstorm project files
 .idea
 
