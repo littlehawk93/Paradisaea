@@ -13,7 +13,7 @@ class m231021_205654_create_image_table extends Migration
     public function safeUp()
     {
         $queryText = "CREATE TABLE `image` (\n";
-        $queryText .= "	`id` INTEGER NOT NULL AUTOINCREMENT,\n";
+        $queryText .= "	`id` INTEGER NOT NULL,\n";
         $queryText .= "	`type_id` INTEGER NOT NULL,\n";
         $queryText .= "	`device_id` CHAR(36) NOT NULL,\n";
         $queryText .= "	`filepath` VARCHAR(2000) NOT NULL,\n";
