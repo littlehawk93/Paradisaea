@@ -2,19 +2,33 @@
 
 namespace app\controllers;
 
-use yii\rest\ActiveController;
+use yii\rest\Controller;
 
 /**
  * DeviceController implements the CRUD actions for Device model.
  */
-class DeviceController extends ActiveController
+class DeviceController extends Controller
 {
-    public $modelClass = "app\models\Device";
-
-    public function behaviors()
+    public function actionView($id)
     {
-        $behaviors = parent::behaviors();
+        return $this->asJson([
+            "action" => "device/view",
+            "device_id" => $id
+        ]);
+    }
 
-        return $behaviors;
+    public function actionCreate()
+    {
+        return $this->asJson([
+            "action" => "device/create"
+        ]);
+    }
+
+    public function actionDelete($id)
+    {
+        return $this->asJson([
+            "action" => "device/delete",
+            "device_id" => $id
+        ]);
     }
 }

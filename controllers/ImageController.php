@@ -2,19 +2,53 @@
 
 namespace app\controllers;
 
-use yii\rest\ActiveController;
+use yii\rest\Controller;
 
 /**
  * ImageController implements the CRUD actions for Image model.
  */
-class ImageController extends ActiveController
+class ImageController extends Controller
 {
-    public $modelClass = "app\models\Image";
-
-    public function behaviors()
+    public function actionIndex($device_id)
     {
-        $behaviors = parent::behaviors();
+        return $this->asJson([
+            "action" => "image/index",
+            "device_id" => $device_id
+        ]);
+    }
 
-        return $behaviors;
+    public function actionView($device_id, $image_id)
+    {
+        return $this->asJson([
+            "action" => "image/view",
+            "device_id" => $device_id,
+            "image_id" => $image_id
+        ]);
+    }
+
+    public function actionCreate($device_id)
+    {
+        return $this->asJson([
+            "action" => "image/create",
+            "device_id" => $device_id
+        ]);
+    }
+
+    public function actionUpdate($device_id, $image_id)
+    {
+        return $this->asJson([
+            "action" => "image/update",
+            "device_id" => $device_id,
+            "image_id" => $image_id
+        ]);
+    }
+
+    public function actionDelete($device_id, $image_id)
+    {
+        return $this->asJson([
+            "action" => "image/delete",
+            "device_id" => $device_id,
+            "image_id" => $image_id
+        ]);
     }
 }
