@@ -9,6 +9,8 @@ use yii\rest\ActiveController;
  */
 class ImageController extends ActiveController
 {
+    public $modelClass = "app\models\Image";
+
     public function behaviors()
     {
         $behaviors = parent::behaviors();

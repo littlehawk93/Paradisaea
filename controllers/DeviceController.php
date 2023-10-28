@@ -9,6 +9,8 @@ use yii\rest\ActiveController;
  */
 class DeviceController extends ActiveController
 {
+    public $modelClass = "app\models\Device";
+
     public function behaviors()
     {
         $behaviors = parent::behaviors();

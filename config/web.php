@@ -42,14 +42,17 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'GET api/<controller>' => '<controller>/index',
+                'GET api/<controller>/<id>' => '<controller>/view',
+                'POST api/<controller>' => '<controller>/create',
+                'PUT api/<controller>/<id>' => '<controller>/update',
+                'DELETE api/<controller>/<id>' => '<controller>/delete',
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
