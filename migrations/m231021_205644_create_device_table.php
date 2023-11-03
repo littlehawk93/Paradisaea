@@ -15,6 +15,8 @@ class m231021_205644_create_device_table extends Migration
         $queryText = "CREATE TABLE `device` (\n";
         $queryText .= "	`id` CHAR(36) NOT NULL,\n";
         $queryText .= "	`view_id` CHAR(36) UNIQUE NOT NULL,\n";
+        $queryText .= " `width` INTEGER NOT NULL,\n";
+        $queryText .= " `height` INTEGER NOT NULL,\n";
         $queryText .= "	`created_at` CHAR(25) NOT NULL,\n";
         $queryText .= "	`created_by` VARCHAR(50) NOT NULL,\n";
         $queryText .= "	`updated_at` CHAR(25) NOT NULL,\n";

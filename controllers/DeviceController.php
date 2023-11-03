@@ -2,33 +2,37 @@
 
 namespace app\controllers;
 
+use app\models\Device;
 use yii\rest\Controller;
+use yii\web\NotFoundHttpException;
 
 /**
  * DeviceController implements the CRUD actions for Device model.
  */
 class DeviceController extends Controller
 {
+    public function beforeAction($action)
+    {
+        return true;
+    }
+
     public function actionView($id)
     {
-        return $this->asJson([
-            "action" => "device/view",
-            "device_id" => $id
-        ]);
-    }
+        $id = Device::cleanID($id);
 
-    public function actionCreate()
-    {
-        return $this->asJson([
-            "action" => "device/create"
-        ]);
-    }
+        $device = Device::findOne(["view_id" => $id]);
 
-    public function actionDelete($id)
-    {
+        if(!$device || $device->deleted !== 0)
+        {
+            throw new NotFoundHttpException("device not found");
+        }
+
         return $this->asJson([
-            "action" => "device/delete",
-            "device_id" => $id
+            "id" => $device->view_id,
+            "width" => $device->width,
+            "height" => $device->height,
+            "created_at" => $device->created_at,
+            "updated_at" => $device->updated_at
         ]);
     }
 }
