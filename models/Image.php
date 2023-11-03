@@ -78,4 +78,17 @@ class Image extends \yii\db\ActiveRecord
     {
         return $this->hasOne(ImageType::class, ['id' => 'type_id']);
     }
+
+    /**
+     * 
+     */
+    public function beforeDelete()
+    {
+        if (!parent::beforeDelete()) 
+        {
+            return false;
+        }
+
+        return !unlink($this->filepath);
+    }
 }

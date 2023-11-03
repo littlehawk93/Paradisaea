@@ -17,12 +17,6 @@ class ImageController extends Controller
             return 1;
         }
 
-        if(!unlink($image->filepath))
-        {
-            $this->stderr("Failed to delete image data saved at '" . $image->filepath . "'");
-            return 1;
-        }
-
         if(!$image->delete())
         {
             $this->stderr("Failed to delete image record in database");
