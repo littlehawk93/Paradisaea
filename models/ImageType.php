@@ -57,4 +57,20 @@ class ImageType extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Image::class, ['type_id' => 'id']);
     }
+
+    public function getBitsPerPixel()
+    {
+        switch($this->id)
+        {
+            case 1:
+                return 1;
+            case 2:
+                return 8;
+            case 3:
+                return 12;
+            case 4:
+                return 24;
+        }
+        return 1;
+    }
 }

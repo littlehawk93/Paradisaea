@@ -11,11 +11,6 @@ use yii\web\NotFoundHttpException;
  */
 class DeviceController extends Controller
 {
-    public function beforeAction($action)
-    {
-        return true;
-    }
-
     public function actionView($id)
     {
         $id = Device::cleanID($id);
@@ -27,12 +22,6 @@ class DeviceController extends Controller
             throw new NotFoundHttpException("device not found");
         }
 
-        return $this->asJson([
-            "id" => $device->view_id,
-            "width" => $device->width,
-            "height" => $device->height,
-            "created_at" => $device->created_at,
-            "updated_at" => $device->updated_at
-        ]);
+        return $this->asJson($device->asResultArray());
     }
 }

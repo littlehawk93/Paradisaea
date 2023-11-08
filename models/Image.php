@@ -19,6 +19,8 @@ use Yii;
  */
 class Image extends \yii\db\ActiveRecord
 {
+    public $image_data;
+
     /**
      * {@inheritdoc}
      */
@@ -41,6 +43,7 @@ class Image extends \yii\db\ActiveRecord
             [['created_by'], 'string', 'max' => 50],
             [['device_id'], 'exist', 'skipOnError' => true, 'targetClass' => Device::class, 'targetAttribute' => ['device_id' => 'id']],
             [['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => ImageType::class, 'targetAttribute' => ['type_id' => 'id']],
+            [['image_data'], 'safe'],
         ];
     }
 
@@ -57,6 +60,77 @@ class Image extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'created_by' => 'Created By',
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if($insert && !$this->image_data)
+        {
+            return false;
+        }
+        else if($insert)
+        {
+            $this->created_at = date(DATE_ISO8601);
+        }
+
+        if ($this->image_data)
+        {
+            return file_put_contents($this->filepath, $this->image_data, 0775);
+        }
+
+        return parent::beforeSave($insert);
+    }
+
+    public function getWidth()
+    {
+        if($this->image_data)
+        {
+            $lines = $this->getImageLines();
+
+            $max = 0;
+
+            foreach($lines as $line)
+            {
+                if(strlen($line) > $max)
+                {
+                    $max = strlen($line);
+                }
+            }
+
+            return $max * 4 / $this->type->getBitsPerPixel();
+        }
+        return 0;
+    }
+
+    public function getHeight()
+    {
+        if($this->image_data)
+        {
+            $lines = $this->getImageLines();
+
+            return count($lines);
+        }
+        return 0;
+    }
+
+    public function getImageMetaData()
+    {
+        $headerLine = trim(substr($this->image_data, 0, strpos($this->image_data, "\n", 0)));
+        return explode("|", $headerLine);
+    }
+
+    public function getImageLines()
+    {
+        $lines = explode("\n", $this->image_data);
+
+        for($i = 0; $i < count($lines); $i++)
+        {
+            $lines[$i] = trim($lines[$i]);
+        }
+
+        array_splice($lines, 0, 1);
+        
+        return $lines;
     }
 
     /**
@@ -79,9 +153,6 @@ class Image extends \yii\db\ActiveRecord
         return $this->hasOne(ImageType::class, ['id' => 'type_id']);
     }
 
-    /**
-     * 
-     */
     public function beforeDelete()
     {
         if (!parent::beforeDelete()) 
@@ -90,5 +161,16 @@ class Image extends \yii\db\ActiveRecord
         }
 
         return !unlink($this->filepath);
+    }
+
+    public function asResultArray()
+    {
+        return [
+            "id" => $this->id,
+            "type" => $this->getType(),
+            "created_at" => $this->created_at,
+            "width" => $this->getWidth(),
+            "height" => $this->getHeight()
+        ];
     }
 }

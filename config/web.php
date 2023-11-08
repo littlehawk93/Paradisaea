@@ -34,7 +34,6 @@ $config = [
                 'GET api/device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>/image' => 'image/index',
                 'GET api/device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>/image/<image_id:\d+>' => 'image/view',
                 'POST api/device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>/image' => 'image/create',
-                'PUT api/device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>/image/<image_id:\d+>' => '<controller>/update',
                 'DELETE api/device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>/image/<image_id:\d+>' => 'image/delete'
             ],
         ],

@@ -61,6 +61,41 @@ class Device extends \yii\db\ActiveRecord
         ];
     }
 
+    public function beforeSave($insert)
+    {
+        if($insert)
+        {
+            $this->id = Device::newID();
+            $this->view_id = Device::newID();
+            
+            $this->created_at = date(DATE_ISO8601);
+            $this->updated_by = $this->created_by;
+            $this->updated_at = $this->created_at;
+        }
+        else
+        {
+            $this->updated_at = date(DATE_ISO8601);
+        }
+
+        return parent::beforeSave($insert);
+    }
+
+    public function getImages()
+    {
+        return $this->hasMany(Image::class, ['id' => 'device_id']);
+    }
+
+    public function asResultArray()
+    {
+        return [
+            "id" => $this->view_id,
+            "width" => $this->width,
+            "height" => $this->height,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at
+        ];
+    }
+
     public static function cleanID($id)
     {
         return trim(strtoupper($id));
@@ -68,10 +103,14 @@ class Device extends \yii\db\ActiveRecord
 
     public static function newID()
     {
-        $time = floor(microtime(true) * 1000);
-        
-        $bytes = random_bytes(8);
+        $timeMillis = floor(microtime(true) * 1000);
 
-        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', $time / 65536, $time % 65536, mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+        $ar = unpack("C*", pack("J", $timeMillis));
+
+        $hexStr = strtoupper(bin2hex(join(array_map("chr", $ar))));
+
+        $hexStr .= strtoupper(bin2hex(random_bytes(8)));
+
+        return sprintf("%s-%s-%s-%s-%s", substr($hexStr, 0, 8), substr($hexStr, 8, 4), substr($hexStr, 12, 4), substr($hexStr, 16, 4), substr($hexStr, 20, 12));
     }
 }

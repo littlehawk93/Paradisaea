@@ -25,14 +25,8 @@ class DeviceController extends Controller
         }
 
         $device = new Device();
-        $device->id = Device::newID();
-        $device->view_id = Device::newID();
         $device->width = $screenwidth;
         $device->height = $screenheight;
-        $device->created_by = get_current_user();
-        $device->created_at = date(DATE_ISO8601);
-        $device->updated_by = $device->created_by;
-        $device->updated_at = $device->created_at;
         $device->deleted = 0;
 
         if(!$device->save())
