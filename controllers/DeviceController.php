@@ -19,7 +19,7 @@ class DeviceController extends Controller
 
         if(!$device || $device->deleted !== 0)
         {
-            throw new NotFoundHttpException("device not found");
+            throw new NotFoundHttpException("Device not found");
         }
 
         return $this->asJson($device->asResultArray());

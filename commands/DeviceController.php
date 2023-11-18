@@ -28,6 +28,7 @@ class DeviceController extends Controller
         $device->width = $screenwidth;
         $device->height = $screenheight;
         $device->deleted = 0;
+        $device->created_by = get_current_user();
 
         if(!$device->save())
         {

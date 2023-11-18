@@ -2,14 +2,17 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Device;
-use app\models\Image;
 use app\models\ImageType;
+use app\models\Image;
+use app\models\ImageUploadForm;
 use yii\web\Response;
 use yii\rest\Controller;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use yii\web\UploadedFile;
 
 /**
  * ImageController implements the CRUD actions for Image model.
@@ -29,7 +32,7 @@ class ImageController extends Controller
 
         $results = array();
 
-        foreach($device->getImages()->orderBy(["created_on" => SORT_ASC]) as $image)
+        foreach($device->getImages()->orderBy(["created_at" => SORT_ASC])->all() as $image)
         {
             $results[] = $image->asResultArray();
         }
@@ -37,11 +40,30 @@ class ImageController extends Controller
         return $this->asJson($results);
     }
 
-    public function actionView($device_id, $image_id)
+    public function actionView($device_id, $image_id, $image_type)
     {
+        if(!$image_type) 
+        {
+            $image_type = 1;
+        }
+
+        if(!is_numeric($image_type))
+        {
+            throw new BadRequestHttpException("Parameter 'image_type' must be numeric");
+        }
+
         if(!is_numeric($image_id))
         {
-            throw new BadRequestHttpException("image_id must be numeric");
+            throw new BadRequestHttpException("Parameter 'image_id' must be numeric");
+        }
+
+        $image_type = intval($image_type);
+
+        $type = ImageType::findOne($image_type);
+
+        if(!$type)
+        {
+            throw new BadRequestHttpException("invalid imgtype provided");
         }
 
         $image_id = intval($image_id);
@@ -67,7 +89,7 @@ class ImageController extends Controller
             throw new NotFoundHttpException("image not found");
         }
 
-        $responseData = file_get_contents($image->filepath);
+        $responseData = $type->encodeImage($image->filepath, $device->width, $device->height);
 
         if(!$responseData)
         {
@@ -92,35 +114,49 @@ class ImageController extends Controller
 
         if(!$device || $device->deleted !== 0)
         {
-            throw new NotFoundHttpException("device not found");
+            throw new NotFoundHttpException("Device not found");
         }
 
-        $fileData = Yii::$app->request->post("fileData");
-        $imageTypeId = Yii::$app->request->post("imageType");
+        $imageUploadForm = new ImageUploadForm();
 
-        $imageType = ImageType::findOne($imageTypeId);
+        $imageUploadForm->file = UploadedFile::getInstanceByName("file"); 
 
-        if(!$imageType)
+        if(!$imageUploadForm->validate())
         {
-            throw new BadRequestHttpException("invalid image type");
+            if($imageUploadForm->hasErrors())
+            {
+                $validationErrors = array();
+
+                foreach($imageUploadForm->errors as $field => $field_errors)
+                {
+                    $validationErrors[] = $field . ": " . join(", ", $field_errors);
+                }
+
+                throw new BadRequestHttpException("Invalid request: " . join("& ", $validationErrors));
+            }
+        }
+
+        $filePath = $imageUploadForm->uploadAndResize($device_id, $device->width, $device->height);
+
+        if(!$filePath)
+        {
+            echo "TEST";
+            throw new BadRequestHttpException("Invalid file uploaded");
         }
 
         $image = new Image();
-        $image->type_id = $imageType->id;
-        $image->type = $imageType;
-        $image->image_data = $fileData;
-        $image->device = $device;
         $image->device_id = $device->id;
         $image->created_by = Yii::$app->request->remoteIp;
+        $image->filepath = $filePath;
 
-        if(!$image->validate())
+        if(!$image->save(true))
         {
-            throw new BadRequestHttpException("invalid image data");
+            throw new ServerErrorHttpException("Unable to save image");
         }
 
-        if(!$image->save(false))
+        if(isset(Yii::$app->request->get()["redirect"]))
         {
-            throw new ServerErrorHttpException("unable to save image");
+            return $this->redirect("/device/" . $device->view_id);
         }
 
         return $this->asJson($image->asResultArray());

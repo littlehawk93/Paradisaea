@@ -30,6 +30,9 @@
 # Database files
 /data
 
+# Web Asset Files
+/web/assets
+
 # phpstorm project files
 .idea
 

@@ -13,6 +13,14 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'user' => [
+            'identityClass' => 'common\models\User',
+            'enableAutoLogin' => false,
+            'enableSession' => false
+        ],
+        'errorHandler' => [
+            'errorAction' => 'site/error'
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
@@ -30,9 +38,10 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'GET /device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>' => 'site/device',
                 'GET api/device/<id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>' => 'device/view',
                 'GET api/device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>/image' => 'image/index',
-                'GET api/device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>/image/<image_id:\d+>' => 'image/view',
+                'GET api/device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>/image/<image_id:\d+>/<image_type:\d+>' => 'image/view',
                 'POST api/device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>/image' => 'image/create',
                 'DELETE api/device/<device_id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}>/image/<image_id:\d+>' => 'image/delete'
             ],

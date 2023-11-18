@@ -61,16 +61,53 @@ class Device extends \yii\db\ActiveRecord
         ];
     }
 
+    public function beforeValidate()
+    {
+        if($this->isNewRecord)
+        {
+            if(!$this->id)
+            {
+                $this->id = Device::newID();
+            }
+
+            if(!$this->view_id)
+            {
+                $this->view_id = Device::newID();
+            }
+
+            if(!$this->created_at)
+            {
+                $this->created_at = date(DATE_ISO8601);
+                $this->updated_at = $this->created_at;
+            }
+
+            $this->updated_by = $this->created_by;
+        }
+
+        return parent::beforeValidate();
+    }
+
     public function beforeSave($insert)
     {
         if($insert)
         {
-            $this->id = Device::newID();
-            $this->view_id = Device::newID();
-            
-            $this->created_at = date(DATE_ISO8601);
+            if(!$this->id)
+            {
+                $this->id = Device::newID();
+            }
+
+            if(!$this->view_id)
+            {
+                $this->view_id = Device::newID();
+            }
+
+            if(!$this->created_at)
+            {
+                $this->created_at = date(DATE_ISO8601);
+                $this->updated_at = $this->created_at;
+            }
+
             $this->updated_by = $this->created_by;
-            $this->updated_at = $this->created_at;
         }
         else
         {
@@ -82,7 +119,7 @@ class Device extends \yii\db\ActiveRecord
 
     public function getImages()
     {
-        return $this->hasMany(Image::class, ['id' => 'device_id']);
+        return $this->hasMany(Image::class, ['device_id' => 'id']);
     }
 
     public function asResultArray()
