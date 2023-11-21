@@ -160,7 +160,7 @@ class ImageController extends Controller
 
         if(isset(Yii::$app->request->get()["redirect"]))
         {
-            return $this->redirect("/device/" . $device->view_id);
+            return $this->redirect("/device/" . $device->view_id . "?success");
         }
 
         return $this->asJson($image->asResultArray());

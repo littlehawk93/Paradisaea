@@ -39,6 +39,7 @@ class DeviceController extends Controller
         }
 
         $device = new Device();
+        $device->name = $name;
         $device->width = $screenwidth;
         $device->height = $screenheight;
         $device->deleted = 0;
