@@ -34,7 +34,11 @@ class ImageController extends Controller
 
         foreach($device->getImages()->orderBy(["created_at" => SORT_ASC])->all() as $image)
         {
-            $results[] = $image->asResultArray();
+            if(isset(Yii::$app->request->get()["idsOnly"])) {
+                $results[] = $image->id;
+            } else {
+                $results[] = $image->asResultArray();
+            }
         }
 
         return $this->asJson($results);

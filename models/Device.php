@@ -9,6 +9,7 @@ use Yii;
  *
  * @property string $id
  * @property string $view_id
+ * @property string $name
  * @property int $width
  * @property int $height
  * @property string $created_at
@@ -33,9 +34,10 @@ class Device extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'view_id', 'width', 'height', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
+            [['id', 'view_id', 'name', 'width', 'height', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
             [['width', 'height', 'deleted'], 'integer'],
             [['id', 'view_id'], 'string', 'max' => 36],
+            [['name'], 'string', 'max' => 100],
             [['created_at', 'updated_at'], 'string', 'max' => 25],
             [['created_by', 'updated_by'], 'string', 'max' => 50],
             [['id'], 'unique'],
@@ -51,6 +53,7 @@ class Device extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'view_id' => 'View ID',
+            'name' => 'Name',
             'width' => 'Screen Width',
             'height' => 'Screen Height',
             'created_at' => 'Created At',

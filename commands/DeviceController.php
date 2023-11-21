@@ -7,7 +7,21 @@ use yii\console\Controller;
 
 class DeviceController extends Controller
 {
-    public function actionCreate($screenwidth, $screenheight)
+    public function actionList()
+    {
+        $devices = Device::find()->all();
+
+        foreach($devices as $device)
+        {
+            $this->stdout(str_pad("ID:", 12, " ") . $device->id . "\n");
+            $this->stdout(str_pad("View ID:", 12, " ") . $device->view_id . "\n");
+            $this->stdout(str_pad("Name:", 12, " ") . $device->name . "\n");
+            $this->stdout(str_pad("Size:", 12, " ") . $device->width . "x" .$device->height . "\n");
+            $this->stdout(str_pad("Disabled:", 12, " ") . ($device->deleted == 0 ? 'N' : 'Y') . "\n\n\n");
+        }
+    }
+
+    public function actionCreate($name, $screenwidth, $screenheight)
     {
         if(!is_numeric($screenwidth) || !is_numeric($screenheight)) 
         {
@@ -56,6 +70,7 @@ class DeviceController extends Controller
 
         $this->stdout(str_pad("ID:", 12, " ") . $device->id . "\n");
         $this->stdout(str_pad("View ID:", 12, " ") . $device->view_id . "\n");
+        $this->stdout(str_pad("Name:", 12, " ") . $device->name . "\n");
         $this->stdout(str_pad("Width:", 12, " ") . $device->width . "\n");
         $this->stdout(str_pad("Height:", 12, " ") . $device->height . "\n");
         $this->stdout(str_pad("Created By:", 12, " ") . $device->created_by . "\n");
