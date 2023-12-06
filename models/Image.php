@@ -98,7 +98,7 @@ class Image extends \yii\db\ActiveRecord
             return false;
         }
 
-        return !unlink($this->filepath);
+        return unlink($this->filepath);
     }
 
     public function asResultArray()
